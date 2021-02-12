@@ -18,6 +18,7 @@ const taskSchema = new Schema({
 })
 
 const ProjectSchema = new Schema({
+    user:String,
     title:String,
     status:String,
     priority:String,

@@ -28,8 +28,9 @@ Router.get('/:id',(req,res) => {
 })
 
 Router.post('/' ,auth,(req,res) => {
-    const {title,status,details,priority} = req.body;
-    if(!title || !status || details || !priority){
+    const {title,status,details,priority,user} = req.body;
+    console.log(req.body);
+    if(!title || !status || !details || !priority || !user){
         return res.status(422).json({error:"please add all the fields"});
     }
     const newProject = new Project({
@@ -37,6 +38,7 @@ Router.post('/' ,auth,(req,res) => {
         status:status,
         priority:priority,
         details,
+        user,
         createdAt:Date.now(),
         updatedAt:Date.now()
     })
@@ -52,7 +54,7 @@ Router.post('/' ,auth,(req,res) => {
 
 Router.put('/:id',auth,(req,res) => {
     const id = req.params.id;
-    if(!req.body.title || !req.body.status || !req.body.details || !req.body.priority){
+    if(!req.body.title || !req.body.status || !req.body.details || !req.body.priority || !req.body.user){
         return res.status(422).json({error:"please add all the fields"});
     }
     Project.findOneAndUpdate({_id:id} , {
@@ -61,7 +63,8 @@ Router.put('/:id',auth,(req,res) => {
             "status":req.body.status,
             "priority":req.body.priority,
             "details":req.body.details,
-            "updatedAt":Date.now()
+            "updatedAt":Date.now(),
+            "user":req.body.user
         }
     }).then(() => {
         res.json('Project Updated')

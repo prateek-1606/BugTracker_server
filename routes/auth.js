@@ -5,7 +5,45 @@ const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config');
 
 routes.get('/',(req,res) => {
-    res.send('Auth');
+    User.find()
+    .then((users) => {
+        res.json(users)
+    })
+    .catch((err) => {
+        res.status(500).json(err)
+    })
+})
+
+routes.put('/:id',(req,res) => {
+    const id = req.params.id;
+    const employe = {
+        email:req.body.email,
+        name:req.body.name
+    }
+    User.findByIdAndUpdate({_id:id},{
+        $push:{employes:employe}
+    })
+    .then(() => {
+        res.send('Employe Added')
+    })
+    .catch((err) => {
+        res.status(422).json(err)
+    })
+})
+
+routes.delete('/:id/:email',(req,res) => {
+    const id = req.params.id;
+    const email = req.params.email;
+    console.log(req.body)
+    console.log(id);
+    User.update({_id:id} ,{"$pull":{"employes":{"email":email}}},{ safe: true, multi:true })
+    .then((resp) => {
+        console.log(resp);
+        res.send('Emloyee deleted')
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 })
 
 routes.post('/signin',(req,res) => {
